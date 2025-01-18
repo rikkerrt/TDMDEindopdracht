@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
              x:Class="TDMDEindopdracht.MapPage"
+             xmlns:viewmodel="clr-namespace:TDMDEindopdracht.Domain.Services"
+             x:DataType="viewmodel:MapPageViewModel"
+             xmlns:custom="clr-namespace:TDMDEindopdracht.Domain.Services"
+             xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="MapPage">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Grid>
         <Grid.RowDefinitions>   
             <RowDefinition Height="Auto"/>
@@ -18,10 +28,8 @@
             Grid.Row="1"
             MvvmMapElements="{Binding MapElements}"
             VisibleRegionInMap="{Binding CurrentMapSpan}"
-            ItemsSource="{Binding Pins}" 
             IsShowingUser="True"
-            MapType="Hybrid"
-            IsVisible="{Binding HasInternetConnection}"
+            MapType="Street"
          >
         </custom:BindableMap>
 

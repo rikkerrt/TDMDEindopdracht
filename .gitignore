@@ -412,3 +412,5 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,dotnetcore
+/TDMDEindopdracht/TDMDEindopdracht/Platforms/Android/Resources/values/strings.xml
+/TDMDEindopdracht/TDMDEindopdracht/Platforms/Android/Resources/values/strings.xml
