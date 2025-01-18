@@ -2,10 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TDMDEindopdracht.Domain.Model;
+using TDMDEindopdracht.Infrastructure;
 
 namespace TDMDEindopdracht.Domain.Services
 {
@@ -26,6 +28,10 @@ namespace TDMDEindopdracht.Domain.Services
             {
                 await _permissionServiceUsed.NavigateToSettingsWhenPermissionDenied();
             }
+
+            Location location = await Geolocation.GetLocationAsync();
+            Debug.WriteLine(APIManager.ListOfStations(location));
+
         }
     }
 }

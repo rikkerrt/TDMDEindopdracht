@@ -14,6 +14,7 @@ namespace TDMDEindopdracht.Domain.Services
     {
         [ObservableProperty] private MapSpan _currentMapSpan;
         [ObservableProperty] private ObservableCollection<MapElement> _mapElements= [];
+        [ObservableProperty] private ObservableCollection<Pin> _pins;
         private readonly IGeolocation geolocation;
         public MapPageViewModel(IGeolocation location) 
         { 
@@ -26,6 +27,17 @@ namespace TDMDEindopdracht.Domain.Services
             MapSpan mapSpan = new MapSpan(location, 0.015, 0.015);
             CurrentMapSpan = mapSpan;
         }
-    }
 
+        public void setPin(double lat, double lng, string longname)
+        {
+            Pin pin = new Pin
+            {
+                Label = longname,
+                Location = new Location(lat, lng),
+                Type = PinType.Place
+            };
+
+            Pins.Add(pin);
+        }
+    }
 }
