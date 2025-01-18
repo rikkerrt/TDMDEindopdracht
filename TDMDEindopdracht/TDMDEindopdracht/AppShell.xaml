@@ -7,9 +7,17 @@
     Shell.FlyoutBehavior="Disabled"
     Title="TDMDEindopdracht">
 
+    <TabBar>
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="MainPage"
+        Icon="homeicon.png"/>
 
+    <ShellContent
+        Title="Map"
+        ContentTemplate="{DataTemplate local:MapPage}"
+        Route="MapPage"
+        Icon="mapicon.png"/>
+    </TabBar>
 </Shell>

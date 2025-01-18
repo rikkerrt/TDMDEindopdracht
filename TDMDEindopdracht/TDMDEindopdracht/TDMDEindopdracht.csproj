@@ -62,4 +62,22 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Domain.Model\" />
+	  <Folder Include="Domain.Services\" />
+	  <Folder Include="Infrastructure\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="MapPage.xaml.cs">
+	    <DependentUpon>MapPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="MapPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
