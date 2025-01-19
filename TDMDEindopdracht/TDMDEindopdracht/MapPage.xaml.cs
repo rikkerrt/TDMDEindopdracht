@@ -32,4 +32,11 @@ public partial class MapPage : ContentPage
         }
         MapView.MapElements.Add(routeLine);
     }
+
+    private void Pin_MarkerClicked(object sender, PinClickedEventArgs e)
+    {
+        if (sender is Pin pin)
+            viewModels.MarkerClicked(pin);
+
+	}
 }

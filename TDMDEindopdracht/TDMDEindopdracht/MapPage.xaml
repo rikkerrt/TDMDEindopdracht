@@ -34,8 +34,9 @@
                 MapType="Hybrid">
             <custom:BindableMap.ItemTemplate>
                 <DataTemplate x:DataType="maps:Pin">
-                    <maps:Pin Location="{Binding Location}"
-                       Label="{Binding Label}"/>
+                    <maps:Pin MarkerClicked="Pin_MarkerClicked"
+                              Location="{Binding Location}"
+                              Label="{Binding Label}"/>
                 </DataTemplate>
             </custom:BindableMap.ItemTemplate>
         </custom:BindableMap>

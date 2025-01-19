@@ -1,5 +1,6 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 using Plugin.LocalNotification;
@@ -64,7 +65,7 @@ namespace TDMDEindopdracht.Domain.Services
         public async void setPin(string longname)
         {
             var userLocation = await Geolocation.GetLastKnownLocationAsync();
-            var ListOfPins = await APIManager.ListOfStations(userLocation);
+            var ListOfPins = await APIManager.ListOfStations(userLocation,false);
             Debug.WriteLine("API call nu ook in mapPageviewmodel");
             Pin pin = new Pin
             {
@@ -128,6 +129,11 @@ namespace TDMDEindopdracht.Domain.Services
             {
                 Debug.WriteLine(ex.ToString());
             }
+        }
+        [RelayCommand]
+        public async Task MarkerClicked(Pin pin)
+        {
+            await APIManager.ListOfStations(pin.Location, true);
         }
     }
 }
