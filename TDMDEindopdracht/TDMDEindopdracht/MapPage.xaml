@@ -28,7 +28,6 @@
             Grid.Row="1"
             MvvmMapElements="{Binding MapElements}"
             VisibleRegionInMap="{Binding CurrentMapSpan}"
-            Pins ="{Binding Pins}"
             IsShowingUser="True"
             MapType="Street"
          >
