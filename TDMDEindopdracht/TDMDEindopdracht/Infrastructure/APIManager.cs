@@ -17,11 +17,10 @@ namespace TDMDEindopdracht.Infrastructure
         public static DatabaseRepository DatabaseRepository { get; set; }
         public static readonly string ns_key = "7eeb2ea7fb0146a98a59bcf7dcf6fa86";
         public static bool save;
-        public static async Task<JsonDocument> ListOfStations(Location geolocation, bool saveInDatabase)
+        public static async Task<StationNS> ListOfStations(Location geolocation)
         {
             double lat = geolocation.Latitude;
             double lng = geolocation.Longitude;
-            save = saveInDatabase;
             Debug.WriteLine($"lat = {lat}");
             Debug.WriteLine($"Lng = {lng}");
 
@@ -33,26 +32,21 @@ namespace TDMDEindopdracht.Infrastructure
             var response = await client.GetAsync(apiLink);
             string json = await response.Content.ReadAsStringAsync();
 
-            if (save) {
-                Debug.WriteLine("Entry zal worden opgeslagen");
-				JsonNode node = JsonNode.Parse(json);
-				JsonObject jsonObject = node.AsObject();
+            JsonNode node = JsonNode.Parse(json);
+            JsonObject jsonObject = node.AsObject();
 
-				string nameStation = jsonObject["payload"][0]?["names"]?["short"].ToString();
-				double latitude = ((double)jsonObject["payload"][0]?["location"]?["lat"]);
-				double longitude = ((double)jsonObject["payload"][0]?["location"]?["lng"]);
+            string nameStation = jsonObject["payload"][0]?["names"]?["short"].ToString();
+            double latitude = ((double)jsonObject["payload"][0]?["location"]?["lat"]);
+            double longitude = ((double)jsonObject["payload"][0]?["location"]?["lng"]);
 
-                await DatabaseRepository.addStation(new StationNS
-                {
-                    name = nameStation, latitude = latitude, longitude = longitude
-                });
-			}
-            
+            return new StationNS
+            {
+                name = nameStation,
+                latitude = latitude,
+                longitude = longitude
+            };
 
-            JsonDocument jsondoc = JsonDocument.Parse(json);
-            return jsondoc;
         }
-
         public static async Task<List<Location>> GetPolyLineList(Location location1, Location location2)
         {
             string apiKey = "AIzaSyBXG_XrA3JRTL58osjxd0DbqH563e2t84o";

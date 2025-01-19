@@ -42,11 +42,11 @@ namespace TDMDEindopdracht.Domain.Services
         public async Task LoadStations()
         {
             var allStations = await _databaseRepository.getVisitedStations();
+            Debug.WriteLine("Stations: " + allStations.Count);
             Stations.Clear();
             foreach (var stat in allStations)
             {
                 Stations.Add(stat);
-                await _databaseRepository.updateDatabase(stat);
             }
         }
     }

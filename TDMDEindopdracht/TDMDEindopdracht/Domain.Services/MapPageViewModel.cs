@@ -35,6 +35,7 @@ namespace TDMDEindopdracht.Domain.Services
         { 
             geolocation = location;
             ZoomToUserLocation();
+            CreatePins();
         }
 
         public async Task makeRoute(Location targetLocation, IDatabaseRepository databaseRepository)
@@ -45,10 +46,26 @@ namespace TDMDEindopdracht.Domain.Services
             if (currentLocation != null)
             {
                 Locations = await APIManager.GetPolyLineList(new Location(currentLocation.Latitude, currentLocation.Longitude), targetLocation);
-                setPin("station");
                 CreateRoute();
                 Task.Run(startUpdating);
             }
+        }
+        public async void CreatePins()
+        {
+            Location location = await geolocation.GetLocationAsync();
+            MapElements.Clear();
+            StationNS stationNS = await APIManager.ListOfStations(location);
+            Pin pin = new Pin
+            {
+                Label = stationNS.name,
+                Location = new Location(stationNS.latitude, stationNS.longitude),
+                Type = PinType.Generic
+            };
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Pins.Add(pin);
+            });
+            Debug.WriteLine(Pins.Count);
         }
         private async void ZoomToUserLocation()
         {
@@ -70,24 +87,6 @@ namespace TDMDEindopdracht.Domain.Services
             {
                 Debug.Write(ex.ToString());
             }
-        }
-
-        public async void setPin(string longname)
-        {
-            var userLocation = await Geolocation.GetLastKnownLocationAsync();
-            var ListOfPins = await APIManager.ListOfStations(userLocation,false);
-            Debug.WriteLine("API call nu ook in mapPageviewmodel");
-            Pin pin = new Pin
-            {
-                Label = longname,
-                Location = new Location(51.595554, 4.780000),
-                Type = PinType.Generic
-            };
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                Pins.Add(pin);
-            });
-            Debug.WriteLine(Pins.Count);
         }
         public void startUpdating()
         {
