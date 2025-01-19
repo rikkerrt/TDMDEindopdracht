@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
+using Plugin.LocalNotification;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using TDMDEindopdracht.Infrastructure;
 
 namespace TDMDEindopdracht.Domain.Services
@@ -18,6 +20,7 @@ namespace TDMDEindopdracht.Domain.Services
         [ObservableProperty] private MapSpan _currentMapSpan;
         [ObservableProperty] private ObservableCollection<MapElement> _mapElements= [];
         [ObservableProperty] private ObservableCollection<Pin> _pins = [];
+        private System.Timers.Timer _timerUpdate;
         private readonly IGeolocation geolocation;
         public MapPageViewModel(IGeolocation location) 
         { 
@@ -25,6 +28,7 @@ namespace TDMDEindopdracht.Domain.Services
             ZoomToUserLocation();
             setPin("station");
             createRoute();
+            Task.Run(startUpdating);
         }
         private async void ZoomToUserLocation()
         {
@@ -63,6 +67,7 @@ namespace TDMDEindopdracht.Domain.Services
             }
 
             MapElements.Add(routeLine);
+            
         }
 
         public async void setPin(string longname)
@@ -81,6 +86,54 @@ namespace TDMDEindopdracht.Domain.Services
                 Pins.Add(pin);
             });
             Debug.WriteLine(Pins.Count);
+        }
+        public void startUpdating()
+        {
+            _timerUpdate = new System.Timers.Timer(2000);
+            _timerUpdate.Elapsed += OnTimedEvent;
+            _timerUpdate.AutoReset = true;
+            _timerUpdate.Start();
+        }
+        private void OnTimedEvent(object? sender, ElapsedEventArgs e)
+        {
+            Task.Run(OnTimeEventAsync);
+        }
+        private async Task OnTimeEventAsync()
+        {
+            
+            try
+            {
+                var location = await geolocation.GetLocationAsync();
+                
+                if (location is null)
+                {
+                    return;
+                }
+                foreach (var pin in Pins)
+                {
+                    var distance = location.CalculateDistance(pin.Location, DistanceUnits.Kilometers) * 1000;
+                    Debug.WriteLine(distance.ToString());
+                    if (distance < 300)
+                    {
+                        var request = new NotificationRequest
+                        {
+                            NotificationId = 1337,
+                            Title = "Station dichtbij",
+                            Description = "U bevindt zich momenteel binnen een radius van 300 meter van het station af.",
+                            CategoryType = NotificationCategoryType.Alarm
+                        };
+                        await LocalNotificationCenter.Current.Show(request);
+                    } else
+                    {
+                        return;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
     }
 }
