@@ -29,7 +29,7 @@ namespace TDMDEindopdracht.Infrastructure
             var response = await client.GetAsync(apiLink);
             string json = await response.Content.ReadAsStringAsync();
             JsonDocument jsondoc = JsonDocument.Parse(json);
-            Debug.WriteLine(json);
+            Debug.WriteLine("json: " + json);
             return jsondoc;
         }
 
