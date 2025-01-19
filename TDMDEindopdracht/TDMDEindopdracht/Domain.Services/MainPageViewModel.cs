@@ -46,7 +46,7 @@ namespace TDMDEindopdracht.Domain.Services
             foreach (var stat in allStations)
             {
                 Stations.Add(stat);
-                _databaseRepository.updateDatabase(stat);
+                await _databaseRepository.updateDatabase(stat);
             }
         }
     }

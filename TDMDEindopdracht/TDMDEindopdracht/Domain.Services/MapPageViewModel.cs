@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using TDMDEindopdracht.Domain.Model;
 using TDMDEindopdracht.Infrastructure;
 
 namespace TDMDEindopdracht.Domain.Services
@@ -21,6 +22,10 @@ namespace TDMDEindopdracht.Domain.Services
         [ObservableProperty] private MapSpan _currentMapSpan;
         [ObservableProperty] private ObservableCollection<MapElement> _mapElements= [];
         [ObservableProperty] private ObservableCollection<Pin> _pins = [];
+
+
+        private IDatabaseRepository _databaseRepository;
+
         public event Action CreateRoute;
         public IEnumerable<Location> Locations { get; set; }
         private System.Timers.Timer _timerUpdate;
@@ -32,9 +37,10 @@ namespace TDMDEindopdracht.Domain.Services
             ZoomToUserLocation();
         }
 
-        public async Task makeRoute(Location targetLocation)
+        public async Task makeRoute(Location targetLocation, IDatabaseRepository databaseRepository)
         {
             Location currentLocation = await geolocation.GetLocationAsync();
+            _databaseRepository = databaseRepository;
 
             if (currentLocation != null)
             {
@@ -137,7 +143,7 @@ namespace TDMDEindopdracht.Domain.Services
         [RelayCommand]
         public async Task MarkerClicked(Pin pin)
         {
-            await makeRoute(pin.Location);
+            await makeRoute(pin.Location, _databaseRepository);
         }
     }
 }
