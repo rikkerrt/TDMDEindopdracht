@@ -11,6 +11,9 @@ namespace TDMDEindopdracht.Domain.Model
         Task Init();
         Task Drop();
         Task Delete(int id);
-        Task updateDatabase();
+        Task updateDatabase(string name);
+        Task addStation(StationNS station);
+        Task <List<string>> getVisitedStations();
+
     }
 }
