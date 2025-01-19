@@ -20,6 +20,8 @@ namespace TDMDEindopdracht.Domain.Services
         [ObservableProperty] private MapSpan _currentMapSpan;
         [ObservableProperty] private ObservableCollection<MapElement> _mapElements= [];
         [ObservableProperty] private ObservableCollection<Pin> _pins = [];
+        public event Action CreateRoute;
+        public IEnumerable<Location> Locations { get; set; }
         private System.Timers.Timer _timerUpdate;
         private readonly IGeolocation geolocation;
         private bool notificationShown = false;
@@ -32,9 +34,9 @@ namespace TDMDEindopdracht.Domain.Services
 
         public async void makeRoute()
         {
-            List<Location> locations = await APIManager.GetPolyLineList(new Location(51.588311, 4.776298), new Location(51.595548, 4.779577));
-            createRoute(locations);
+            Locations = await APIManager.GetPolyLineList(new Location(51.588311, 4.776298), new Location(51.595548, 4.779577));
             setPin("station");
+            CreateRoute();
             Task.Run(startUpdating);
         }
         private async void ZoomToUserLocation()
@@ -57,23 +59,6 @@ namespace TDMDEindopdracht.Domain.Services
             {
                 Debug.Write(ex.ToString());
             }
-        }
-
-        public void createRoute(List<Location> locations)
-        {
-            Polyline routeLine =  new Polyline
-            {
-                StrokeColor = Color.FromHex("1F51FF"),
-                StrokeWidth = 10
-            };
-
-            foreach (Location location in locations) {
-                Debug.WriteLine($"lat = {location.Latitude}, lng = {location.Longitude}");
-                routeLine.Geopath.Add(location);
-            }
-
-            MapElements.Add(routeLine);
-            
         }
 
         public async void setPin(string longname)

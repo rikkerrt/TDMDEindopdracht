@@ -24,14 +24,14 @@
         </Grid.RowDefinitions>
 
         <custom:BindableMap 
-     x:Name="MapView"
-     Grid.Row="1"
-     MvvmMapElements="{Binding MapElements}"
-     VisibleRegionInMap="{Binding CurrentMapSpan}"
-     ItemsSource="{Binding Pins}"
+                x:Name="MapView"
+                Grid.Row="1"
+                MvvmMapElements="{Binding MapElements}"
+                VisibleRegionInMap="{Binding CurrentMapSpan}"
+                ItemsSource="{Binding Pins}"
 
-     IsShowingUser="True"
-     MapType="Hybrid">
+                IsShowingUser="True"
+                MapType="Hybrid">
             <custom:BindableMap.ItemTemplate>
                 <DataTemplate x:DataType="maps:Pin">
                     <maps:Pin Location="{Binding Location}"
