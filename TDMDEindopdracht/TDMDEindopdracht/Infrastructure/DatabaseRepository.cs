@@ -36,12 +36,6 @@ namespace TDMDEindopdracht.Infrastructure
         {
             await _connection.CreateTableAsync<StationNS>();
         }
-
-        public Task updateDatabase()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task updateDatabase(string name)
         {
             var stationInDatabase = await _connection.FindAsync<StationNS>(name);
