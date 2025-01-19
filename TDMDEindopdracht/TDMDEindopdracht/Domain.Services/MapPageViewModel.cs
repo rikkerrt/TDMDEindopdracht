@@ -30,15 +30,19 @@ namespace TDMDEindopdracht.Domain.Services
         { 
             geolocation = location;
             ZoomToUserLocation();
-            makeRoute();
         }
 
-        public async void makeRoute()
+        public async Task makeRoute(Location targetLocation)
         {
-            Locations = await APIManager.GetPolyLineList(new Location(51.588311, 4.776298), new Location(51.595548, 4.779577));
-            setPin("station");
-            CreateRoute();
-            Task.Run(startUpdating);
+            Location currentLocation = await geolocation.GetLocationAsync();
+
+            if (currentLocation != null)
+            {
+                Locations = await APIManager.GetPolyLineList(new Location(currentLocation.Latitude, currentLocation.Longitude), targetLocation);
+                setPin("station");
+                CreateRoute();
+                Task.Run(startUpdating);
+            }
         }
         private async void ZoomToUserLocation()
         {
@@ -133,7 +137,7 @@ namespace TDMDEindopdracht.Domain.Services
         [RelayCommand]
         public async Task MarkerClicked(Pin pin)
         {
-            await APIManager.ListOfStations(pin.Location, true);
+            await makeRoute(pin.Location);
         }
     }
 }
