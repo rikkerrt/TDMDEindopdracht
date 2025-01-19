@@ -30,8 +30,6 @@ namespace TDMDEindopdracht.Domain.Services
             }
 
             Location location = await Geolocation.GetLocationAsync();
-            Debug.WriteLine(APIManager.ListOfStations(location));
-
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 using System;
@@ -16,12 +17,13 @@ namespace TDMDEindopdracht.Domain.Services
     {
         [ObservableProperty] private MapSpan _currentMapSpan;
         [ObservableProperty] private ObservableCollection<MapElement> _mapElements= [];
-        //[ObservableProperty] private ObservableCollection<MapElement> _pins;
+        [ObservableProperty] private ObservableCollection<Pin> _pins = [];
         private readonly IGeolocation geolocation;
         public MapPageViewModel(IGeolocation location) 
         { 
             geolocation = location;
             ZoomToUserLocation();
+            setPin("station");
             createRoute();
         }
         private async void ZoomToUserLocation()
@@ -31,7 +33,7 @@ namespace TDMDEindopdracht.Domain.Services
                 var userLocation = await Geolocation.GetLastKnownLocationAsync();
                 if (userLocation != null)
                 {
-                    Location location = new Location(userLocation.Latitude, userLocation.Longitude);
+                    Location location = new Location(51.588331, 4.777802);
                     MapSpan mapSpan = new MapSpan(location, 0.015, 0.015);
                     CurrentMapSpan = mapSpan;
                 }
@@ -63,16 +65,22 @@ namespace TDMDEindopdracht.Domain.Services
             MapElements.Add(routeLine);
         }
 
-        public void setPin(double lat, double lng, string longname)
+        public async void setPin(string longname)
         {
+            var userLocation = await Geolocation.GetLastKnownLocationAsync();
+            var ListOfPins = await APIManager.ListOfStations(userLocation);
+            Debug.WriteLine("API call nu ook in mapPageviewmodel");
             Pin pin = new Pin
             {
                 Label = longname,
-                Location = new Location(lat, lng),
-                Type = PinType.Place
+                Location = new Location(51.595554, 4.780000),
+                Type = PinType.Generic
             };
-
-            //Pins.Add(pin);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Pins.Add(pin);
+            });
+            Debug.WriteLine(Pins.Count);
         }
     }
 }
