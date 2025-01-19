@@ -22,6 +22,7 @@ namespace TDMDEindopdracht.Domain.Services
         [ObservableProperty] private ObservableCollection<Pin> _pins = [];
         private System.Timers.Timer _timerUpdate;
         private readonly IGeolocation geolocation;
+        private bool notificationShown = false;
         public MapPageViewModel(IGeolocation location) 
         { 
             geolocation = location;
@@ -113,8 +114,9 @@ namespace TDMDEindopdracht.Domain.Services
                 {
                     var distance = location.CalculateDistance(pin.Location, DistanceUnits.Kilometers) * 1000;
                     Debug.WriteLine(distance.ToString());
-                    if (distance < 300)
+                    if (distance < 300 && !notificationShown)
                     {
+                        notificationShown = true;
                         var request = new NotificationRequest
                         {
                             NotificationId = 1337,
@@ -123,8 +125,10 @@ namespace TDMDEindopdracht.Domain.Services
                             CategoryType = NotificationCategoryType.Alarm
                         };
                         await LocalNotificationCenter.Current.Show(request);
-                    } else
+                    } 
+                    if(distance > 300)
                     {
+                        notificationShown = false;
                         return;
                     }
                 }
