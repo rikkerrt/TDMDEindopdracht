@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,16 @@ namespace TDMDEindopdracht.Domain.Services
     public partial class MainPageViewModel : ObservableObject
     {
         private readonly ILocationPermissionService _permissionServiceUsed;
+        private readonly IDatabaseRepository _databaseRepository;
 
-        public MainPageViewModel(ILocationPermissionService locationPermissionService)
+        [ObservableProperty] public string _nameOfStation;
+        [ObservableProperty] public ObservableCollection<string> _stations;
+        public MainPageViewModel(IDatabaseRepository databaseRepo,ILocationPermissionService locationPermissionService)
         {
+            _databaseRepository = databaseRepo;
             _permissionServiceUsed = locationPermissionService;
+            Stations = new ObservableCollection<string>();
+            LoadStations();
         }
         [RelayCommand]
         public async Task LoadInPage()
@@ -30,6 +37,17 @@ namespace TDMDEindopdracht.Domain.Services
             }
 
             Location location = await Geolocation.GetLocationAsync();
+            await _databaseRepository.Init();
+        }
+        public async Task LoadStations()
+        {
+            var allStations = await _databaseRepository.getVisitedStations();
+            Stations.Clear();
+            foreach (var stat in allStations)
+            {
+                Stations.Add(stat);
+                _databaseRepository.updateDatabase(stat);
+            }
         }
     }
 }
