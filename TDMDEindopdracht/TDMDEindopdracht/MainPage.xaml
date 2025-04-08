@@ -11,7 +11,7 @@
     </ContentPage.Behaviors>
 
     <StackLayout>
-        <CollectionView ItemsSource="{Binding NameOfStation}"
+        <CollectionView ItemsSource="{Binding Stations}"
                         SelectionMode="Single"
                         Margin="0,20,0,0">
             <CollectionView.ItemTemplate>
@@ -20,7 +20,7 @@
                            Style="{StaticResource FrameStyle}">
                         <VerticalStackLayout>
                             <!-- Label toont de naam van de route -->
-                            <Label Text="{Binding Stations}" FontSize="18"  
+                            <Label Text="{Binding}" FontSize="18"  
                                    Style="{StaticResource LabelStyle}"/>
                         </VerticalStackLayout>
                     </Frame>

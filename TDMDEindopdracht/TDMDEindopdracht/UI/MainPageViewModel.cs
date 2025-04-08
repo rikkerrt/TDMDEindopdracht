@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TDMDEindopdracht.Domain.Interfaces;
+using TDMDEindopdracht.Domain.Models;
 using TDMDEindopdracht.Infrastructure;
 
 namespace TDMDEindopdracht.Domain.Services
@@ -19,12 +20,13 @@ namespace TDMDEindopdracht.Domain.Services
 
         [ObservableProperty] public string _nameOfStation;
         [ObservableProperty] public ObservableCollection<string> _stations;
-        public MainPageViewModel(IDatabaseRepository databaseRepo,ILocationPermissionService locationPermissionService)
+        public MainPageViewModel(IDatabaseRepository databaseRepo,ILocationPermissionService locationPermissionService, IGeolocation geolocation)
         {
             _databaseRepository = databaseRepo;
             _permissionServiceUsed = locationPermissionService;
             Stations = new ObservableCollection<string>();
             LoadStations();
+
         }
         [RelayCommand]
         public async Task LoadInPage()
@@ -37,7 +39,21 @@ namespace TDMDEindopdracht.Domain.Services
             }
 
             Location location = await Geolocation.GetLocationAsync();
+            ObservableCollection<StationNS> stations = await NSApiCall.GetNearestStationsAsync(location, 3);
+
+            foreach (var station in stations)
+            {
+                Debug.WriteLine(station.name);
+                Debug.WriteLine(station.latitude);
+                Debug.WriteLine(station.longitude);
+                Stations.Add(station.name);
+            }
             await _databaseRepository.Init();
+
+            foreach(string name in Stations)
+            {
+                Debug.WriteLine(name);
+            }
         }
         public async Task LoadStations()
         {
@@ -46,7 +62,7 @@ namespace TDMDEindopdracht.Domain.Services
             Stations.Clear();
             foreach (var stat in allStations)
             {
-                Stations.Add(stat);
+                //Stations.Add(stat);
             }
         }
     }

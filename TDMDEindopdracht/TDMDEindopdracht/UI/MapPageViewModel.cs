@@ -38,7 +38,7 @@ namespace TDMDEindopdracht.Domain.Services
         { 
             geolocation = location;
             ZoomToUserLocation();
-            CreatePins();
+            //CreatePins();
         }
 
         public async Task makeRoute(Location targetLocation, IDatabaseRepository databaseRepository)
@@ -53,21 +53,31 @@ namespace TDMDEindopdracht.Domain.Services
                 Task.Run(startUpdating);
             }
         }
+
         public async void CreatePins()
         {
-            Location location = await geolocation.GetLocationAsync();
             MapElements.Clear();
-            StationNS stationNS = await NSApiCall.ListOfStations(location);
-            Pin pin = new Pin
+            //ObservableCollection<StationNS> stations = MainPageViewModel.getStations();
+            ObservableCollection<StationNS> stations = null;
+
+            foreach (var stationNS in stations)
             {
-                Label = stationNS.name,
-                Location = new Location(stationNS.latitude, stationNS.longitude),
-                Type = PinType.Generic
-            };
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                Pins.Add(pin);
-            });
+                Pin pin = new Pin
+                {
+                    Label = stationNS.name,
+                    Location = new Location(stationNS.latitude, stationNS.longitude),
+                    Type = PinType.Generic
+                };
+                Debug.WriteLine(stationNS.name);
+                Debug.WriteLine(stationNS.latitude);
+                Debug.WriteLine(stationNS.longitude);
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Pins.Add(pin);
+                });
+            }
+            
             Debug.WriteLine(Pins.Count);
         }
         private async void ZoomToUserLocation()
