@@ -1,5 +1,5 @@
 ﻿
-using TDMDEindopdracht.Domain.Model;
+using TDMDEindopdracht.Domain.Models;
 using TDMDEindopdracht.Domain.Services;
 
 namespace TDMDEindopdracht

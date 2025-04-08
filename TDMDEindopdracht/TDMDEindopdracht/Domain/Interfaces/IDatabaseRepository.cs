@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TDMDEindopdracht.Domain.Models;
 
-namespace TDMDEindopdracht.Domain.Model
+namespace TDMDEindopdracht.Domain.Interfaces
 {
     public interface IDatabaseRepository
     {
@@ -13,7 +14,7 @@ namespace TDMDEindopdracht.Domain.Model
         Task Delete(int id);
         Task updateDatabase(string name);
         Task addStation(StationNS station);
-        Task <List<string>> getVisitedStations();
+        Task<List<string>> getVisitedStations();
 
     }
 }

@@ -81,4 +81,9 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Domain\Services\" />
+	  <Folder Include="Application\" />
+	</ItemGroup>
+
 </Project>

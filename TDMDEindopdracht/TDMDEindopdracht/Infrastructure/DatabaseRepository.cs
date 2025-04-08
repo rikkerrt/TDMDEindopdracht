@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TDMDEindopdracht.Domain.Model;
+using TDMDEindopdracht.Domain.Interfaces;
+using TDMDEindopdracht.Domain.Models;
 
 namespace TDMDEindopdracht.Infrastructure
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TDMDEindopdracht.Domain.Model
+namespace TDMDEindopdracht.Domain.Interfaces
 {
     public interface ILocationPermissionService
     {

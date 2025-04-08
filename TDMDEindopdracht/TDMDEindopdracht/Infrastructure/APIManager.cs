@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using TDMDEindopdracht.Domain.Model;
+using TDMDEindopdracht.Domain.Models;
 using static System.Net.WebRequestMethods;
 
 namespace TDMDEindopdracht.Infrastructure

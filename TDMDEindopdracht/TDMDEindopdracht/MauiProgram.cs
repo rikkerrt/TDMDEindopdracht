@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
-using TDMDEindopdracht.Domain.Model;
+using TDMDEindopdracht.Domain.Interfaces;
 using TDMDEindopdracht.Domain.Services;
 using TDMDEindopdracht.Infrastructure;
 

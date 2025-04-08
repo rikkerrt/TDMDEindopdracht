@@ -12,7 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using TDMDEindopdracht.Domain.Model;
+using TDMDEindopdracht.Domain.Interfaces;
+using TDMDEindopdracht.Domain.Models;
 using TDMDEindopdracht.Infrastructure;
 
 namespace TDMDEindopdracht.Domain.Services

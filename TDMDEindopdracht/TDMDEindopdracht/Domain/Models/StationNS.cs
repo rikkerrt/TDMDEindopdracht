@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TDMDEindopdracht.Domain.Model
+namespace TDMDEindopdracht.Domain.Models
 {
     public class StationNS
     {
@@ -13,6 +13,6 @@ namespace TDMDEindopdracht.Domain.Model
         [PrimaryKey, AutoIncrement, Column("Index")]
         public int index { get; set; }
         public double latitude { get; set; }
-        public double longitude { get; set; }  
+        public double longitude { get; set; }
     }
 }

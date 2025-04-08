@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TDMDEindopdracht.Domain.Model;
+using TDMDEindopdracht.Domain.Interfaces;
 
-namespace TDMDEindopdracht.Domain.Services
+namespace TDMDEindopdracht.Infrastructure
 {
     public class LocationPermissionService : ILocationPermissionService
     {
-        
+
         public async Task<PermissionStatus> CheckAndRequestPermissionForLocationAsync()
         {
             PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
@@ -48,12 +48,12 @@ namespace TDMDEindopdracht.Domain.Services
             if (openSettings)
             {
 #if ANDROID
-            var context = Android.App.Application.Context;
-            var intent = new Android.Content.Intent(Android.Provider.Settings.ActionApplicationDetailsSettings);
-            intent.AddFlags(Android.Content.ActivityFlags.NewTask);
-            var uri = Android.Net.Uri.FromParts("package", context.PackageName, null);
-            intent.SetData(uri);
-            context.StartActivity(intent);
+                var context = Android.App.Application.Context;
+                var intent = new Android.Content.Intent(Android.Provider.Settings.ActionApplicationDetailsSettings);
+                intent.AddFlags(Android.Content.ActivityFlags.NewTask);
+                var uri = Android.Net.Uri.FromParts("package", context.PackageName, null);
+                intent.SetData(uri);
+                context.StartActivity(intent);
 #endif
                 return true;
             }
