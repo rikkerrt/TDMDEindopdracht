@@ -33,7 +33,6 @@ namespace TDMDEindopdracht.Domain.Services
         private System.Timers.Timer _timerUpdate;
         private readonly IGeolocation geolocation;
         private bool notificationShown = false;
-        private RouteService routeService;
         public MapPageViewModel(IGeolocation location) 
         { 
             geolocation = location;
@@ -48,7 +47,7 @@ namespace TDMDEindopdracht.Domain.Services
 
             if (currentLocation != null)
             {
-                Locations = await routeService.GetRoutesAsync(new Location(currentLocation.Latitude, currentLocation.Longitude), targetLocation);
+                Locations = await RouteService.GetRoutesAsync(new Location(currentLocation.Latitude, currentLocation.Longitude), targetLocation);
                 CreateRoute();
                 Task.Run(startUpdating);
             }
