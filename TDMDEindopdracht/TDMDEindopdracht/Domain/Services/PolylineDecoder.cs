@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TDMDEindopdracht.Domain.Services
 {
-    internal class PolylineDecoder
+    public class PolylineDecoder
     {
         public static List<Location> DecodePolyLine(string encodedPolyLine)
         {
@@ -61,6 +62,7 @@ namespace TDMDEindopdracht.Domain.Services
                 Location mLatLng = new Location(Convert.ToDouble(currentLat) / 100000.0, Convert.ToDouble(currentLng) / 100000.0);
                 poly.Add(mLatLng);
             }
+            Debug.WriteLine(poly.ToString());
             return poly;
         }
     }

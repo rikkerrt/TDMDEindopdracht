@@ -14,7 +14,7 @@ namespace TDMDEindopdracht.Infrastructure
 {
     public class MapsApiCall
     {
-        public async Task<string> GetPolyLineList(Location location1, Location location2)
+        public async static Task<string> GetPolyLineList(Location location1, Location location2)
         {
             string apiKey = "AIzaSyBXG_XrA3JRTL58osjxd0DbqH563e2t84o";
             string url = $"https://maps.googleapis.com/maps/api/directions/json?origin={location1.Latitude},{location1.Longitude}&destination={location2.Latitude},{location2.Longitude}&mode=walking&key={apiKey}";

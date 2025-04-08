@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls.Maps;
+using System.Diagnostics;
 using TDMDEindopdracht.Domain.Services;
 
 namespace TDMDEindopdracht;
@@ -28,6 +29,8 @@ public partial class MapPage : ContentPage
 
         foreach (Location location in locations)
         {
+            Debug.WriteLine("Locations");
+            Debug.Write(location);
             routeLine.Geopath.Add(location);
         }
         MapView.MapElements.Add(routeLine);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,18 +9,13 @@ using TDMDEindopdracht.Infrastructure;
 
 namespace TDMDEindopdracht.ApplicationLayer
 {
-    public class RouteService
+    public static class RouteService
     {
-        private readonly MapsApiCall mapsApiCall;
-
-        public RouteService(MapsApiCall mapsApiCall)
+        public static async Task<List<Location>> GetRoutesAsync(Location from, Location to)
         {
-            this.mapsApiCall = mapsApiCall;
-        }
-
-        public async Task<List<Location>> GetRoutesAsync(Location from, Location to)
-        {
-            var encodedPolyline = await mapsApiCall.GetPolyLineList(from, to);
+            var encodedPolyline = await MapsApiCall.GetPolyLineList(from, to);
+            Debug.WriteLine("POLYLINE RECEIVED");
+            Debug.WriteLine(encodedPolyline);
             var route = PolylineDecoder.DecodePolyLine(encodedPolyline);
             return route;
         }
