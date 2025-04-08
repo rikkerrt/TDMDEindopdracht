@@ -24,7 +24,7 @@ namespace TDMDEindopdracht.Domain.Services
         {
             _databaseRepository = databaseRepo;
             _permissionServiceUsed = locationPermissionService;
-            Stations = new ObservableCollection<string>();
+            _stations = new ObservableCollection<string>();
             LoadStations();
 
         }
@@ -43,14 +43,19 @@ namespace TDMDEindopdracht.Domain.Services
 
             foreach (var station in stations)
             {
+                if (_stations.Contains(station.name))
+                {
+                    Debug.WriteLine("String allready in stationslist.");
+                    return;
+                }
                 Debug.WriteLine(station.name);
                 Debug.WriteLine(station.latitude);
                 Debug.WriteLine(station.longitude);
-                Stations.Add(station.name);
+                _stations.Add(station.name);
             }
             await _databaseRepository.Init();
 
-            foreach(string name in Stations)
+            foreach(string name in _stations)
             {
                 Debug.WriteLine(name);
             }
