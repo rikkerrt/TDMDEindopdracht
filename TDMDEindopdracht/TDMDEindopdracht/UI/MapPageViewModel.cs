@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using TDMDEindopdracht.ApplicationLayer;
 using TDMDEindopdracht.Domain.Interfaces;
 using TDMDEindopdracht.Domain.Models;
 using TDMDEindopdracht.Infrastructure;
@@ -32,6 +33,7 @@ namespace TDMDEindopdracht.Domain.Services
         private System.Timers.Timer _timerUpdate;
         private readonly IGeolocation geolocation;
         private bool notificationShown = false;
+        private RouteService routeService;
         public MapPageViewModel(IGeolocation location) 
         { 
             geolocation = location;
@@ -46,7 +48,7 @@ namespace TDMDEindopdracht.Domain.Services
 
             if (currentLocation != null)
             {
-                Locations = await APIManager.GetPolyLineList(new Location(currentLocation.Latitude, currentLocation.Longitude), targetLocation);
+                Locations = await routeService.GetRoutesAsync(new Location(currentLocation.Latitude, currentLocation.Longitude), targetLocation);
                 CreateRoute();
                 Task.Run(startUpdating);
             }
@@ -55,7 +57,7 @@ namespace TDMDEindopdracht.Domain.Services
         {
             Location location = await geolocation.GetLocationAsync();
             MapElements.Clear();
-            StationNS stationNS = await APIManager.ListOfStations(location);
+            StationNS stationNS = await NSApiCall.ListOfStations(location);
             Pin pin = new Pin
             {
                 Label = stationNS.name,
