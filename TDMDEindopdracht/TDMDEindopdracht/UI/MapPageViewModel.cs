@@ -37,7 +37,7 @@ namespace TDMDEindopdracht.Domain.Services
         { 
             geolocation = location;
             ZoomToUserLocation();
-            //CreatePins();
+            CreatePins();
         }
 
         public async Task makeRoute(Location targetLocation, IDatabaseRepository databaseRepository)
@@ -55,9 +55,9 @@ namespace TDMDEindopdracht.Domain.Services
 
         public async void CreatePins()
         {
+            Location currentLocation = await Geolocation.GetLocationAsync();
             MapElements.Clear();
-            //ObservableCollection<StationNS> stations = MainPageViewModel.getStations();
-            ObservableCollection<StationNS> stations = null;
+            ObservableCollection<StationNS> stations = await NSApiCall.GetNearestStationsAsync(currentLocation, 3);
 
             foreach (var stationNS in stations)
             {
