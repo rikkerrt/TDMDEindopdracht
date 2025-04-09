@@ -12,33 +12,24 @@ using TDMDEindopdracht.Domain.Services;
 
 namespace TDMDEindopdracht.Infrastructure
 {
-    public interface INSApiCall
+    internal class NSApiCall
     {
-        Task<ObservableCollection<StationNS>> GetNearestStationsAsync(Location location, int limit);
-    }
-
-    public class NSApiCall : INSApiCall
-    {
-        private readonly HttpClient _httpClient;
-        private const string NsApiKey = "7eeb2ea7fb0146a98a59bcf7dcf6fa86";
-
-        public NSApiCall(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-            if (!_httpClient.DefaultRequestHeaders.Contains("Ocp-Apim-Subscription-Key"))
-            {
-                _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", NsApiKey);
-            }
-        }
-
-        public async Task<ObservableCollection<StationNS>> GetNearestStationsAsync(Location location, int limit)
+        public static DatabaseRepository DatabaseRepository { get; set; }
+        public static readonly string ns_key = "7eeb2ea7fb0146a98a59bcf7dcf6fa86";
+        public static bool save;
+        public static async Task<ObservableCollection<StationNS>> GetNearestStationsAsync(Location location, int limit)
         {
             string url = $"https://gateway.apiportal.ns.nl/nsapp-stations/v2/nearest?lat={location.Latitude}&lng={location.Longitude}&limit={limit}";
             Debug.WriteLine(url);
 
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "7eeb2ea7fb0146a98a59bcf7dcf6fa86");
+
+
+
             try
             {
-                string response = await _httpClient.GetStringAsync(url);
+                string response = await client.GetStringAsync(url);
                 Debug.WriteLine(response);
                 JObject json = JObject.Parse(response);
 
@@ -52,6 +43,7 @@ namespace TDMDEindopdracht.Infrastructure
                         latitude = station["lat"]?.ToObject<double>() ?? 0,
                         longitude = station["lng"]?.ToObject<double>() ?? 0
                     };
+                    Debug.WriteLine(stationInfo.name);
 
                     stations.Add(stationInfo);
                 }

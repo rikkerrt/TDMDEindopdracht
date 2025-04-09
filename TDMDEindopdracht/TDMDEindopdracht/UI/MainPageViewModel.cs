@@ -17,25 +17,17 @@ namespace TDMDEindopdracht.Domain.Services
     {
         private readonly ILocationPermissionService _permissionServiceUsed;
         private readonly IDatabaseRepository _databaseRepository;
-        private readonly INSApiCall _nsApiCall;
 
         [ObservableProperty] public string _nameOfStation;
         [ObservableProperty] public ObservableCollection<string> _stations;
-
-        public MainPageViewModel(
-            IDatabaseRepository databaseRepo,
-            ILocationPermissionService locationPermissionService,
-            IGeolocation geolocation,
-            INSApiCall nsApiCall)
+        public MainPageViewModel(IDatabaseRepository databaseRepo, ILocationPermissionService locationPermissionService, IGeolocation geolocation)
         {
             _databaseRepository = databaseRepo;
             _permissionServiceUsed = locationPermissionService;
-            _nsApiCall = nsApiCall;
             _stations = new ObservableCollection<string>();
-
             LoadStations();
-        }
 
+        }
         [RelayCommand]
         public async Task LoadInPage()
         {
@@ -44,24 +36,23 @@ namespace TDMDEindopdracht.Domain.Services
             if (currentStatus == PermissionStatus.Denied)
             {
                 await _permissionServiceUsed.NavigateToSettingsWhenPermissionDenied();
-                return;
             }
 
             Location location = await Geolocation.GetLocationAsync();
-            ObservableCollection<StationNS> stations = await _nsApiCall.GetNearestStationsAsync(location, 3);
+            ObservableCollection<StationNS> stations = await NSApiCall.GetNearestStationsAsync(location, 3);
 
             foreach (var station in stations)
             {
                 if (_stations.Contains(station.name))
                 {
-                    Debug.WriteLine("String already in stations list.");
-                    continue;
+                    Debug.WriteLine("String allready in stationslist.");
+                    return;
                 }
-
-                Debug.WriteLine($"{station.name} - {station.latitude}, {station.longitude}");
+                Debug.WriteLine(station.name);
+                Debug.WriteLine(station.latitude);
+                Debug.WriteLine(station.longitude);
                 _stations.Add(station.name);
             }
-
             await _databaseRepository.Init();
 
             foreach (string name in _stations)
@@ -69,16 +60,14 @@ namespace TDMDEindopdracht.Domain.Services
                 Debug.WriteLine(name);
             }
         }
-
         public async Task LoadStations()
         {
             var allStations = await _databaseRepository.getVisitedStations();
             Debug.WriteLine("Stations: " + allStations.Count);
             Stations.Clear();
-
             foreach (var stat in allStations)
             {
-                //Stations.Add(stat); // Uncomment if station names should be reloaded
+                //Stations.Add(stat);
             }
         }
     }

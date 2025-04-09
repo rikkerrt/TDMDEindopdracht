@@ -26,7 +26,6 @@ namespace TDMDEindopdracht
             builder.Services.AddSingleton<IDatabaseRepository>(s => new DatabaseRepository(dataBasePath));
 
             builder.Services.AddSingleton<IGeolocation>(Geolocation.Default);
-            builder.Services.AddSingleton<INSApiCall, NSApiCall>();
 
             builder.Services.AddSingleton<MapPageViewModel>();
             builder.Services.AddSingleton<MapPage>(s => new MapPage(s.GetRequiredService<MapPageViewModel>()));

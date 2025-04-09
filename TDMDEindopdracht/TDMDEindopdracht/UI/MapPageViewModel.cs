@@ -1,4 +1,3 @@
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls.Maps;
@@ -25,62 +24,51 @@ namespace TDMDEindopdracht.Domain.Services
         [ObservableProperty] private ObservableCollection<MapElement> _mapElements = [];
         [ObservableProperty] private ObservableCollection<Pin> _pins = [];
 
-        private readonly IDatabaseRepository _databaseRepository;
-        private readonly IGeolocation _geolocation;
-        private readonly INSApiCall _nsApiCall;
-        private bool _notificationShown = false;
-        private System.Timers.Timer _timerUpdate;
+
+        private IDatabaseRepository _databaseRepository;
 
         public event Action CreateRoute;
-
         public IEnumerable<Location> Locations { get; set; }
-
-        public MapPageViewModel(
-            IGeolocation geolocation,
-            INSApiCall nsApiCall,
-            IDatabaseRepository databaseRepository)
+        private System.Timers.Timer _timerUpdate;
+        private readonly IGeolocation geolocation;
+        private bool notificationShown = false;
+        public MapPageViewModel(IGeolocation location)
         {
-            _geolocation = geolocation;
-            _nsApiCall = nsApiCall;
-            _databaseRepository = databaseRepository;
-
+            geolocation = location;
             ZoomToUserLocation();
             CreatePins();
         }
 
-        public async Task MakeRoute(Location targetLocation)
+        public async Task makeRoute(Location targetLocation, IDatabaseRepository databaseRepository)
         {
-            Location currentLocation = await _geolocation.GetLocationAsync();
+            Location currentLocation = await geolocation.GetLocationAsync();
+            _databaseRepository = databaseRepository;
 
             if (currentLocation != null)
             {
-                Locations = await RouteService.GetRoutesAsync(
-                    new Location(currentLocation.Latitude, currentLocation.Longitude),
-                    targetLocation);
-
-                CreateRoute?.Invoke();
-                Task.Run(StartUpdating);
+                Locations = await RouteService.GetRoutesAsync(new Location(currentLocation.Latitude, currentLocation.Longitude), targetLocation);
+                CreateRoute();
+                Task.Run(startUpdating);
             }
         }
 
         public async void CreatePins()
         {
-            Location currentLocation = await _geolocation.GetLocationAsync();
+            Location currentLocation = await Geolocation.GetLocationAsync();
             MapElements.Clear();
-            Pins.Clear();
-
-            ObservableCollection<StationNS> stations = await _nsApiCall.GetNearestStationsAsync(currentLocation, 3);
+            ObservableCollection<StationNS> stations = await NSApiCall.GetNearestStationsAsync(currentLocation, 3);
 
             foreach (var stationNS in stations)
             {
-                var pin = new Pin
+                Pin pin = new Pin
                 {
                     Label = stationNS.name,
                     Location = new Location(stationNS.latitude, stationNS.longitude),
                     Type = PinType.Generic
                 };
-
-                Debug.WriteLine($"{stationNS.name} - {stationNS.latitude}, {stationNS.longitude}");
+                Debug.WriteLine(stationNS.name);
+                Debug.WriteLine(stationNS.latitude);
+                Debug.WriteLine(stationNS.longitude);
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
@@ -88,18 +76,17 @@ namespace TDMDEindopdracht.Domain.Services
                 });
             }
 
-            Debug.WriteLine($"Aantal pins: {Pins.Count}");
+            Debug.WriteLine(Pins.Count);
         }
-
         private async void ZoomToUserLocation()
         {
             try
             {
-                var userLocation = await _geolocation.GetLastKnownLocationAsync();
+                var userLocation = await Geolocation.GetLastKnownLocationAsync();
                 if (userLocation != null)
                 {
-                    var location = new Location(userLocation.Latitude, userLocation.Longitude);
-                    var mapSpan = new MapSpan(location, 0.015, 0.015);
+                    Location location = new Location(51.588331, 4.777802);
+                    MapSpan mapSpan = new MapSpan(location, 0.015, 0.015);
                     CurrentMapSpan = mapSpan;
                 }
                 else
@@ -112,38 +99,35 @@ namespace TDMDEindopdracht.Domain.Services
                 Debug.Write(ex.ToString());
             }
         }
-
-        public void StartUpdating()
+        public void startUpdating()
         {
             _timerUpdate = new System.Timers.Timer(2000);
             _timerUpdate.Elapsed += OnTimedEvent;
             _timerUpdate.AutoReset = true;
             _timerUpdate.Start();
         }
-
         private void OnTimedEvent(object? sender, ElapsedEventArgs e)
         {
             Task.Run(OnTimeEventAsync);
         }
-
         private async Task OnTimeEventAsync()
         {
+
             try
             {
-                var location = await _geolocation.GetLocationAsync();
-                if (location is null)
-                    return;
+                var location = await geolocation.GetLocationAsync();
 
+                if (location is null)
+                {
+                    return;
+                }
                 foreach (var pin in Pins)
                 {
                     var distance = location.CalculateDistance(pin.Location, DistanceUnits.Kilometers) * 1000;
-
-                    Debug.WriteLine($"Afstand tot {pin.Label}: {distance}m");
-
-                    if (distance < 300 && !_notificationShown)
+                    Debug.WriteLine(distance.ToString());
+                    if (distance < 300 && !notificationShown)
                     {
-                        _notificationShown = true;
-
+                        notificationShown = true;
                         var request = new NotificationRequest
                         {
                             NotificationId = 1337,
@@ -151,25 +135,25 @@ namespace TDMDEindopdracht.Domain.Services
                             Description = "U bevindt zich momenteel binnen een radius van 300 meter van het station af.",
                             CategoryType = NotificationCategoryType.Alarm
                         };
-
                         await LocalNotificationCenter.Current.Show(request);
                     }
-                    else if (distance > 300)
+                    if (distance > 300)
                     {
-                        _notificationShown = false;
+                        notificationShown = false;
+                        return;
                     }
                 }
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
             }
         }
-
         [RelayCommand]
         public async Task MarkerClicked(Pin pin)
         {
-            await MakeRoute(pin.Location);
+            await makeRoute(pin.Location, _databaseRepository);
         }
     }
 }
