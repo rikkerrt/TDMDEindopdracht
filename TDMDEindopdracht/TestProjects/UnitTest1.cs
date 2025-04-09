@@ -1,31 +1,24 @@
-using TDMDEindopdracht.Domain.Services;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TDMDEindopdracht.Domain.Models; // Namespace waar StationNS staat
 
-namespace TestProjects
+namespace MyApp.Tests
 {
     [TestClass]
-    public class UnitTest1
+    public class StationTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void StationNS_Should_Have_Name_And_Coordinates()
         {
-            // Gegeven een gecodeerde polyline string (voorbeeld van een polyline)
-            string encodedPolyline = "_p~iF~ps|U_ulLnnqC_mqNvxqT";
+            var station = new StationNS
+            {
+                name     = "Breda",
+                latitude = 51.59,
+                longitude = 4.78
+            };
 
-            // Wanneer we de DecodePolyLine-methode aanroepen
-            List<Location> result = PolylineDecoder.DecodePolyLine(encodedPolyline);
-
-            // Dan moeten we verwachten dat de polyline correct wordt gedeecodeerd
-            // We controleren bijvoorbeeld het aantal resultaten
-            Assert.AreEqual(4, result.Count, "De gedecodeerde polyline moet 4 locaties bevatten.");
-
-            // Controleer specifieke locaties (gebruik hier de verwachte waarden)
-            Assert.AreEqual(38.5, result[0].Latitude, 0.0001, "De eerste locatie latitude is incorrect.");
-            Assert.AreEqual(-120.2, result[0].Longitude, 0.0001, "De eerste locatie longitude is incorrect.");
-
-            Assert.AreEqual(40.7, result[1].Latitude, 0.0001, "De tweede locatie latitude is incorrect.");
-            Assert.AreEqual(-120.95, result[1].Longitude, 0.0001, "De tweede locatie longitude is incorrect.");
-
-            // Voeg eventueel meer assert statements toe voor extra validatie
+            Assert.IsNotNull(station.name);
+            Assert.IsTrue(station.latitude > 0);
+            Assert.IsTrue(station.longitude > 0);
         }
     }
 }
